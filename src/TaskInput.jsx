@@ -57,7 +57,13 @@ class TaskInput extends React.Component {
           value={newTask}
         />
         <ul className="list-group">
-          {tasks.map(task => <FinishedTask key={task.id} task={task} deleteTask={this.deleteTask} editTask={this.editTask} />)}
+          {tasks.map(task => (
+            <FinishedTask
+              key={task.id}
+              task={task}
+              deleteTask={this.deleteTask}
+              editTask={this.editTask} />
+          ))}
         </ul>
       </div>
     )
