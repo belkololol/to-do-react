@@ -5,15 +5,21 @@ import { v4 as uuidv4 } from 'uuid';
 class TaskInput extends React.Component {
   state = {
     tasks: [
-      { task: 'сварить суп', contentEditable: false, id: uuidv4() },
-      { task: 'сгонять в щеглово', contentEditable: false, id: uuidv4() },
+      { task: 'сварить суп', contentEditable: false, id: uuidv4(), isDone: true },
+      { task: 'сгонять в щеглово', contentEditable: false, id: uuidv4(), isDone: false },
     ],
     newTask: ''
   }
 
   handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      let copyState = { tasks: [...this.state.tasks, { task: this.state.newTask, id: uuidv4() }], contentEditable: false, newTask: '' };
+      let copyState = {
+        tasks: [
+          ...this.state.tasks,
+          { task: this.state.newTask, id: uuidv4(), contentEditable: false, isDone: false }
+        ],
+        newTask: ''
+      };
       this.setState(copyState);
     }
   }
@@ -33,6 +39,19 @@ class TaskInput extends React.Component {
       tasks: this.state.tasks.map(el => {
         if (el.id === task.id) {
           return { ...task, contentEditable: !task.contentEditable };
+        } else {
+          return { ...el, contentEditable: false };
+        }
+      })
+    };
+    this.setState(copyState)
+  }
+
+  doneTask = (task) => {
+    let copyState = {
+      tasks: this.state.tasks.map(el => {
+        if (el.id === task.id) {
+          return { ...task, isDone: !task.isDone };
         } else {
           return el;
         }
@@ -62,7 +81,9 @@ class TaskInput extends React.Component {
               key={task.id}
               task={task}
               deleteTask={this.deleteTask}
-              editTask={this.editTask} />
+              editTask={this.editTask}
+              doneTask={this.doneTask}
+            />
           ))}
         </ul>
       </div>

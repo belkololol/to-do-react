@@ -18,7 +18,7 @@ class FinishedTask extends React.Component {
         }
     }
     render() {
-        const { task, editTask, deleteTask } = this.props;
+        const { task, editTask, deleteTask, doneTask } = this.props;
 
         return (
             <li className="list-group-item">
@@ -29,7 +29,12 @@ class FinishedTask extends React.Component {
                         defaultValue={task.task}
                         onKeyDown={this.onKeyDown}
                     />
-                    : <p className="task">{task.task}</p>
+                    : <p
+                        className={`task ${task.isDone ? 'done' : ''}`}
+                        onClick={() => { doneTask(task) }}
+                    >
+                        {task.task}
+                    </p>
                 }
                 <div className="buttons">
                     <button
