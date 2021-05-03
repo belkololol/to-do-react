@@ -3,13 +3,12 @@ import FinishedTask from './FinishedTask'
 import { v4 as uuidv4 } from 'uuid';
 
 class TaskInput extends React.Component {
-  state = {
-    tasks: [
-      { task: 'сварить суп', contentEditable: false, id: uuidv4(), isDone: true },
-      { task: 'сгонять в щеглово', contentEditable: false, id: uuidv4(), isDone: false },
-    ],
-    newTask: ''
-  }
+  state =
+    JSON.parse(localStorage.getItem('taskInputState')) ||
+    {
+      tasks: [],
+      newTask: ''
+    }
 
   handleKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -21,21 +20,31 @@ class TaskInput extends React.Component {
         newTask: ''
       };
       this.setState(copyState);
+      localStorage.setItem('taskInputState', JSON.stringify(copyState));
     }
   }
 
-  onNewTaskChange = (e) => {
+  onNewTaskChange = (e) => { 
     let task = e.target.value;
-    this.setState({ newTask: task });
+    let copyState = {
+      tasks: [
+        ...this.state.tasks,
+      ],
+      newTask: task
+    };
+    this.setState(copyState);
+    localStorage.setItem('taskInputState', JSON.stringify(copyState));
   }
 
   deleteTask = (task) => {
-    let copyState = { tasks: this.state.tasks.filter(el => el.id !== task.id) }
+    let copyState = {...this.state, tasks: this.state.tasks.filter(el => el.id !== task.id)}
     this.setState(copyState)
+    localStorage.setItem('taskInputState', JSON.stringify(copyState))
   }
 
   editTask = (task) => {
     let copyState = {
+      ...this.state,
       tasks: this.state.tasks.map(el => {
         if (el.id === task.id) {
           return { ...task, contentEditable: !task.contentEditable };
@@ -44,11 +53,13 @@ class TaskInput extends React.Component {
         }
       })
     };
-    this.setState(copyState)
+    this.setState(copyState);
+    localStorage.setItem('taskInputState', JSON.stringify(copyState));
   }
 
   doneTask = (task) => {
     let copyState = {
+      ...this.state,
       tasks: this.state.tasks.map(el => {
         if (el.id === task.id) {
           return { ...task, isDone: !task.isDone };
@@ -57,7 +68,8 @@ class TaskInput extends React.Component {
         }
       })
     };
-    this.setState(copyState)
+    this.setState(copyState);
+    localStorage.setItem('taskInputState', JSON.stringify(copyState));
   }
 
 
